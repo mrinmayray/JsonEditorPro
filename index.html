@@ -370,9 +370,51 @@
     
     <input type="file" id="jsonInput" accept=".json"/>
     <div id="errorDisplay" class="error-message" style="display: none;"></div>
-    <div id="rawJsonOnErrorContainer" style="display: none;">
-        <p><strong>Raw file content (due to parsing error):</strong></p>
-        <pre id="rawJsonOnError"></pre>
+    <div id="rawJsonOnErrorContainer" style="display: none; margin-top: 20px;">
+        <div class="json-validation-recommendation" style="background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <h3 style="margin-top: 0; color: #333;">We found a problem with your JSON file</h3>
+            <p style="font-size: 16px; line-height: 1.5;">Your file has a formatting error that needs to be fixed before it can be opened. We recommend using <a href="https://jsonformatter.org/" target="_blank" style="color: #007bff; font-weight: bold;">JSONFormatter.org</a> to help correct your file.</p>
+            <div style="margin-top: 15px;">
+                <button id="openJsonFormatterBtn" style="background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 500;">Fix my file at JSONFormatter.org</button>
+            </div>
+        </div>
+        
+        <div id="user-friendly-error" style="margin-bottom: 20px; background-color: white; border-radius: 6px; padding: 15px; border: 1px solid #e9ecef; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <h4 style="margin-top: 0; color: #333; margin-bottom: 15px;">What went wrong?</h4>
+            <div id="simplified-error-message" style="padding: 10px; background-color: #f8f9fa; border-radius: 4px; margin-bottom: 15px; line-height: 1.5; font-size: 15px;">
+                <!-- Will be filled dynamically -->
+            </div>
+            
+            <div id="error-example" style="display: none; margin-top: 15px;">
+                <h5 style="margin-bottom: 10px; color: #555;">Example of what might be wrong:</h5>
+                <div style="display: flex; margin-bottom: 10px;">
+                    <div style="flex: 1; padding: 10px; background-color: #ffdede; border-radius: 4px; margin-right: 10px;">
+                        <div style="margin-bottom: 5px; font-weight: bold;">❌ Incorrect:</div>
+                        <pre id="incorrect-example" style="margin: 0; white-space: pre-wrap; font-family: Consolas, monospace; font-size: 14px;"></pre>
+                    </div>
+                    <div style="flex: 1; padding: 10px; background-color: #e3ffe3; border-radius: 4px;">
+                        <div style="margin-bottom: 5px; font-weight: bold;">✓ Correct:</div>
+                        <pre id="correct-example" style="margin: 0; white-space: pre-wrap; font-family: Consolas, monospace; font-size: 14px;"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background-color: white; border-radius: 6px; padding: 15px; border: 1px solid #e9ecef; margin-bottom: 20px;">
+            <h4 style="margin-top: 0; margin-bottom: 15px; color: #6c757d; display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" style="margin-right: 8px;" fill="#6c757d">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </svg>
+                Technical Details (for developers)
+            </h4>
+            <p><strong>Error message:</strong> <span id="jsonErrorMessage" style="color: #d8000c; font-family: Consolas, monospace;"></span></p>
+            <div style="margin-top: 10px;">
+                <details>
+                    <summary style="cursor: pointer; color: #6c757d; padding: 5px 0;">View file content</summary>
+                    <pre id="rawJsonOnError" style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; overflow: auto; max-height: 300px; border: 1px solid #ddd; margin-top: 10px;"></pre>
+                </details>
+            </div>
+        </div>
     </div>
     <form id="jsonForm"></form>
     <button id="exportBtn" style="display: none;">Save JSON</button>
@@ -400,6 +442,7 @@
       const rawJsonOnErrorContainer = document.getElementById('rawJsonOnErrorContainer');
       const rawJsonOnErrorPre = document.getElementById('rawJsonOnError');
       const searchContainer = document.getElementById('searchContainer');
+      const jsonErrorMessage = document.getElementById('jsonErrorMessage');
 
       // Clear previous state
       form.innerHTML = ''; 
@@ -408,6 +451,7 @@
       errorDisplay.textContent = '';
       rawJsonOnErrorContainer.style.display = 'none';
       rawJsonOnErrorPre.textContent = '';
+      jsonErrorMessage.textContent = '';
       searchContainer.style.display = 'none';
       jsonData = null;
 
@@ -431,8 +475,29 @@
           } catch (err) {
             errorDisplay.textContent = 'Error parsing JSON file: ' + err.message;
             errorDisplay.style.display = 'block';
+            jsonErrorMessage.textContent = err.message;
             rawJsonOnErrorPre.textContent = fileContent; // Show raw content
             rawJsonOnErrorContainer.style.display = 'block';
+            
+            // Generate user-friendly error message
+            const simplifiedError = document.getElementById('simplified-error-message');
+            const incorrectExample = document.getElementById('incorrect-example');
+            const correctExample = document.getElementById('correct-example');
+            const errorExample = document.getElementById('error-example');
+            
+            // Create user-friendly error message based on the type of error
+            const friendlyError = createFriendlyErrorMessage(err.message, fileContent);
+            simplifiedError.innerHTML = friendlyError.message;
+            
+            // Show example if available
+            if (friendlyError.hasExample) {
+                incorrectExample.textContent = friendlyError.incorrectExample;
+                correctExample.textContent = friendlyError.correctExample;
+                errorExample.style.display = 'block';
+            } else {
+                errorExample.style.display = 'none';
+            }
+            
             jsonData = null;
           }
         };
@@ -929,7 +994,73 @@
       setupSearch();
     }
 
-    // ... existing code ...
+    // Function to create user-friendly error messages
+    function createFriendlyErrorMessage(errorMsg, content) {
+        // Default response object
+        let response = {
+            message: "There's a formatting problem with your file. JSON files need to follow specific formatting rules.",
+            hasExample: false,
+            incorrectExample: "",
+            correctExample: ""
+        };
+        
+        // Check for common error types and provide user-friendly explanations
+        if (errorMsg.includes('Unexpected token }')) {
+            response.message = "There appears to be a missing comma between values or an extra comma at the end of a list.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  "name": "John"\n  "age": 30\n}';
+            response.correctExample = '{\n  "name": "John",\n  "age": 30\n}';
+        } 
+        else if (errorMsg.includes('Unexpected token ,')) {
+            response.message = "There's an extra comma that shouldn't be there, or a missing value after a comma.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  "name": "John",\n  "age": 30,\n}';
+            response.correctExample = '{\n  "name": "John",\n  "age": 30\n}';
+        }
+        else if (errorMsg.includes('Unexpected end of JSON')) {
+            response.message = "Your file appears to be incomplete. There might be missing closing brackets or braces.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  "name": "John",\n  "items": [\n    "apple",\n    "orange"\n';
+            response.correctExample = '{\n  "name": "John",\n  "items": [\n    "apple",\n    "orange"\n  ]\n}';
+        }
+        else if (errorMsg.includes('Unexpected token :')) {
+            response.message = "There's a problem with a property name. Every property name must be surrounded by double quotes.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  name: "John"\n}';
+            response.correctExample = '{\n  "name": "John"\n}';
+        }
+        else if (errorMsg.includes('Unexpected token n')) {
+            response.message = "There might be a null value typed incorrectly. The word 'null' should be lowercase without quotes.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  "value": NULL\n}';
+            response.correctExample = '{\n  "value": null\n}';
+        }
+        else if (errorMsg.includes('Unexpected token t') || errorMsg.includes('Unexpected token f')) {
+            response.message = "There might be a true/false value typed incorrectly. Boolean values must be lowercase without quotes.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  "isActive": TRUE\n}';
+            response.correctExample = '{\n  "isActive": true\n}';
+        }
+        else if (errorMsg.includes('Unexpected token [')) {
+            response.message = "There's a problem with an array (list) in your file. Arrays need to be properly formatted.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  "items": ["apple" "orange"]\n}';
+            response.correctExample = '{\n  "items": ["apple", "orange"]\n}';
+        }
+        else if (errorMsg.includes('Unexpected number')) {
+            response.message = "There's a number in an unexpected place. Check for missing commas or quotes around property names.";
+            response.hasExample = true;
+            response.incorrectExample = '{\n  123: "value"\n}';
+            response.correctExample = '{\n  "123": "value"\n}';
+        }
+        
+        return response;
+    }
+
+    // Add event listener for the JSONFormatter.org button
+    document.getElementById('openJsonFormatterBtn').addEventListener('click', function() {
+      window.open('https://jsonformatter.org/', '_blank');
+    });
   </script>
 </body>
 </html>
