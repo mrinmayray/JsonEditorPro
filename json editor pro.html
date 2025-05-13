@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JSON Editor Pro</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 900px;
+      margin: 20px;
+      position: relative;
+    }
+
+    h1 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 0 auto 25px auto;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
+    input[type="file"]:hover {
+      border-color: #007bff;
+    }
+
+    #jsonForm {
+      margin-top: 20px;
+    }
+
+    .json-entry {
+      margin-bottom: 12px;
+      padding-left: 25px;
+      border-left: 3px solid #e9ecef; /* Lighter, thicker indent line */
+      position: relative; /* For pseudo-elements if needed */
+    }
+    .json-entry:last-child {
+        margin-bottom: 0;
+    }
+    /* Add some spacing before a nested object/array */
+    .json-entry > fieldset {
+        margin-top: 8px;
+    }
+
+
+    .json-entry > label { /* Label for the key */
+      font-weight: 600; /* Slightly bolder */
+      color: #495057; /* Darker grey */
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.95em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: calc(100% - 20px); /* Full width minus padding */
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.9em;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    input[type="checkbox"] {
+      margin-left: 8px;
+      vertical-align: middle;
+      transform: scale(1.1); /* Slightly larger checkbox */
+    }
+    
+    /* Style for key-value pair when value is a primitive */
+    .json-entry-primitive {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between label and input */
+    }
+    .json-entry-primitive > label {
+        margin-bottom: 0; /* Remove bottom margin for inline effect */
+        flex-shrink: 0; /* Prevent label from shrinking */
+    }
+    .json-entry-primitive > input,
+    .json-entry-primitive > textarea {
+        flex-grow: 1; /* Input takes remaining space */
+        width: auto; /* Override fixed width */
+    }
+
+
+    fieldset.json-container { /* Generic container for object/array */
+      border: 1px solid #007bff;
+      border-radius: 6px;
+      padding: 10px 15px 15px 15px; /* More padding inside */
+      margin-top: 5px; /* Space above the fieldset */
+      background-color: #fdfdff; /* Very light blue tint */
+    }
+
+    fieldset.json-container legend {
+      font-weight: bold;
+      color: #0056b3;
+      padding: 0 8px;
+      font-size: 0.9em;
+      background-color: #fff; /* Legend background to sit on top of border */
+    }
+
+    button#exportBtn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.05em;
+      font-weight: 500;
+      display: block;
+      margin: 30px auto 10px auto;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    button#exportBtn:hover {
+      background-color: #218838;
+    }
+
+    button#exportBtn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      color: #D8000C;
+      background-color: #FFD2D2;
+      border: 1px solid #D8000C;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 4px;
+      white-space: pre-wrap; /* Keep formatting of error message */
+    }
+
+    #rawJsonOnError {
+        margin-top: 15px;
+        padding: 10px;
+        border: 1px dashed #ccc;
+        background-color: #f9f9f9;
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .array-control-btn, .item-remove-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 4px 10px; /* Adjusted padding */
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85em; /* Adjusted font size */
+      margin-left: 10px;
+      vertical-align: middle; /* Align with legend/label text */
+      margin-top: -2px; /* Fine-tune alignment */
+    }
+    .array-control-btn:hover, .item-remove-btn:hover {
+      background-color: #0056b3;
+    }
+    .array-control-btn.bulk-add {
+        background-color: #17a2b8; /* Teal for bulk add */
+    }
+    .array-control-btn.bulk-add:hover {
+        background-color: #138496;
+    }
+    .item-control-btn { /* Generic class for item buttons */
+      color: white;
+      border: none;
+      padding: 3px 8px; /* Smaller padding for item controls */
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em; /* Smaller font for item controls */
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .item-remove-btn {
+      background-color: #dc3545; /* Red for remove */
+    }
+    .item-remove-btn:hover {
+      background-color: #c82333;
+    }
+    .item-move-btn {
+      background-color: #6c757d; /* Grey for move */
+    }
+    .item-move-btn:hover {
+      background-color: #5a6268;
+    }
+    .item-move-btn:disabled {
+      background-color: #adb5bd;
+      cursor: not-allowed;
+    }
+
+    /* Align remove button nicely with primitive inputs */
+    .json-entry-primitive .item-remove-btn {
+        margin-left: 10px;
+    }
+    /* Align remove button for nested objects/arrays within an array item */
+    .json-entry > fieldset + .item-remove-btn {
+        margin-top: 5px; /* Add some space if it's after a fieldset */
+        display: inline-block; /* Ensure it behaves well */
+    }
+     /* Wrapper for array item content and its remove button */
+    .array-item-wrapper {
+        display: flex;
+        align-items: flex-start; /* Align items to the start, useful for multi-line textareas */
+        width: 100%;
+    }
+    .array-item-content {
+        flex-grow: 1; /* Content takes up available space */
+    }
+
+    /* Search feature styles */
+    #searchContainer {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+    
+    #searchInput {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 0.95em;
+      margin-right: 10px;
+    }
+    
+    .search-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    
+    .search-btn:hover {
+      background-color: #0069d9;
+    }
+    
+    #clearSearchBtn {
+      background-color: #6c757d;
+    }
+    
+    #clearSearchBtn:hover {
+      background-color: #5a6268;
+    }
+    
+    #searchResults {
+      margin-top: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 10px;
+      background-color: white;
+    }
+    
+    #searchResults ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #searchResults li {
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    
+    #searchResults li:hover {
+      background-color: #f1f8ff;
+    }
+    
+    #searchResults li:last-child {
+      border-bottom: none;
+    }
+    
+    .highlight {
+      background-color: #ffffa0 !important;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Footer styles */
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      font-size: 0.9em;
+      color: #6c757d;
+    }
+    
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    .github-link:hover {
+      color: #0366d6;
+    }
+    
+    .github-icon {
+      margin-right: 5px;
+      width: 20px;
+      height: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>JSON Editor Pro</h1>
+    
+    <!-- Search container -->
+    <div id="searchContainer" style="display: none;">
+      <input type="text" id="searchInput" placeholder="Search JSON (keys or values)...">
+      <button id="searchBtn" class="search-btn">Search</button>
+      <button id="clearSearchBtn" class="search-btn">Clear</button>
+      <div id="searchResults" style="display: none;"></div>
+    </div>
+    
+    <input type="file" id="jsonInput" accept=".json"/>
+    <div id="errorDisplay" class="error-message" style="display: none;"></div>
+    <div id="rawJsonOnErrorContainer" style="display: none;">
+        <p><strong>Raw file content (due to parsing error):</strong></p>
+        <pre id="rawJsonOnError"></pre>
+    </div>
+    <form id="jsonForm"></form>
+    <button id="exportBtn" style="display: none;">Save JSON</button>
+    
+    <!-- Footer with GitHub credit -->
+    <div class="footer">
+      <a href="https://github.com/mrinmayray" target="_blank" class="github-link">
+        <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+        </svg>
+        Created by Mrinmay Ray
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let jsonData = null;
+    let originalFilename = "exported_data.json";
+
+    document.getElementById('jsonInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const exportBtn = document.getElementById('exportBtn');
+      const form = document.getElementById('jsonForm');
+      const errorDisplay = document.getElementById('errorDisplay');
+      const rawJsonOnErrorContainer = document.getElementById('rawJsonOnErrorContainer');
+      const rawJsonOnErrorPre = document.getElementById('rawJsonOnError');
+      const searchContainer = document.getElementById('searchContainer');
+
+      // Clear previous state
+      form.innerHTML = ''; 
+      exportBtn.style.display = 'none';
+      errorDisplay.style.display = 'none';
+      errorDisplay.textContent = '';
+      rawJsonOnErrorContainer.style.display = 'none';
+      rawJsonOnErrorPre.textContent = '';
+      searchContainer.style.display = 'none';
+      jsonData = null;
+
+
+      if (file) {
+        originalFilename = file.name;
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+          const fileContent = event.target.result;
+          try {
+            jsonData = JSON.parse(fileContent);
+            renderJSONStructure(form, jsonData, ''); // Start rendering from root
+            exportBtn.style.display = 'inline-block';
+            errorDisplay.style.display = 'none'; // Hide error display on success
+            rawJsonOnErrorContainer.style.display = 'none';
+            
+            // Show search container when JSON is loaded
+            searchContainer.style.display = 'block';
+            setupSearch();
+          } catch (err) {
+            errorDisplay.textContent = 'Error parsing JSON file: ' + err.message;
+            errorDisplay.style.display = 'block';
+            rawJsonOnErrorPre.textContent = fileContent; // Show raw content
+            rawJsonOnErrorContainer.style.display = 'block';
+            jsonData = null;
+          }
+        };
+        reader.onerror = function() {
+            errorDisplay.textContent = 'Error reading file.';
+            errorDisplay.style.display = 'block';
+            jsonData = null;
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    function renderJSONStructure(parentElement, data, currentPath) {
+      for (const key in data) {
+        if (Object.hasOwnProperty.call(data, key)) {
+          const value = data[key];
+          let newPath;
+          const sanitizedIdPart = String(key).replace(/[^a-zA-Z0-9_]/g, '_'); // Sanitize key for ID
+
+          if (Array.isArray(data)) {
+            newPath = `${currentPath}[${key}]`;
+          } else {
+            newPath = currentPath ? `${currentPath}.${key}` : key;
+          }
+          const elementId = newPath.replace(/[\[\].]/g, '_'); // Sanitize full path for ID
+
+          const entryDiv = document.createElement('div');
+          entryDiv.classList.add('json-entry');
+
+          const label = document.createElement('label');
+          label.textContent = key + ":";
+          label.htmlFor = elementId;
+          
+
+          if (value === null) {
+            entryDiv.appendChild(label);
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = 'null';
+            input.id = elementId;
+            input.name = newPath;
+            input.onchange = function() {
+              updateJSONValue(jsonData, newPath, this.value === 'null' ? null : this.value);
+            };
+            entryDiv.appendChild(input);
+          } else if (typeof value === 'object') {
+            entryDiv.appendChild(label); // Label before fieldset
+            const fieldset = document.createElement('fieldset');
+            fieldset.classList.add('json-container');
+            const legend = document.createElement('legend');
+            legend.textContent = Array.isArray(value) ? `Array (${value.length} items)` : "Object";
+            fieldset.appendChild(legend);
+
+            if (Array.isArray(value)) {
+                const addButton = document.createElement('button');
+                addButton.type = 'button'; 
+                addButton.textContent = 'Add Item';
+                addButton.classList.add('array-control-btn');
+                addButton.onclick = function() { addArrayItem(newPath); };
+                legend.appendChild(addButton);
+
+                const bulkAddButton = document.createElement('button');
+                bulkAddButton.type = 'button';
+                bulkAddButton.textContent = 'Bulk Add';
+                bulkAddButton.classList.add('array-control-btn', 'bulk-add');
+                bulkAddButton.onclick = function() { bulkAddArrayItems(newPath); };
+                legend.appendChild(bulkAddButton);
+            }
+
+            renderJSONStructure(fieldset, value, newPath); 
+            entryDiv.appendChild(fieldset);
+
+          } else { // Primitive value
+            const itemWrapper = document.createElement('div'); // Wrapper for label, input, and remove button (if in array)
+            itemWrapper.classList.add('json-entry-primitive'); // Use this class for flex layout
+            
+            itemWrapper.appendChild(label);
+
+            let input;
+            if (typeof value === 'string' && value.length > 60 && !Array.isArray(data)) { // Textarea for long strings not in an array item directly
+                input = document.createElement('textarea');
+            } else {
+                input = document.createElement('input'); // Default to input
+            }
+            
+            input.id = elementId;
+            input.name = newPath;
+
+            if (typeof value === 'boolean') {
+              input.type = 'checkbox';
+              input.checked = value;
+            } else if (typeof value === 'number') {
+              input.type = 'number';
+              input.value = value;
+              input.step = 'any'; // Allow decimals
+            } else { // string
+              input.type = 'text';
+              input.value = value;
+            }
+
+            input.onchange = function() {
+              let valToUpdate;
+              if (this.type === 'checkbox') {
+                valToUpdate = this.checked;
+              } else if (this.type === 'number') {
+                valToUpdate = this.valueAsNumber;
+                if (isNaN(valToUpdate) && this.value.trim() === "") { 
+                    const originalValue = getValueByPath(jsonData, newPath);
+                    valToUpdate = (originalValue === null) ? null : this.value; 
+                } else if (isNaN(valToUpdate)) {
+                    alert('Invalid number entered. Reverting.');
+                    this.value = getValueByPath(jsonData, newPath); 
+                    return;
+                }
+              } else { 
+                valToUpdate = this.value;
+              }
+              updateJSONValue(jsonData, newPath, valToUpdate);
+            };
+            itemWrapper.appendChild(input);
+            entryDiv.appendChild(itemWrapper);
+          }
+
+          // If the current data context is an array, add control buttons for this item
+          if (Array.isArray(data)) {
+            const itemIndex = parseInt(key, 10); // key is the index as a string
+
+            const moveUpButton = document.createElement('button');
+            moveUpButton.type = 'button';
+            moveUpButton.textContent = '↑ Up';
+            moveUpButton.classList.add('item-control-btn', 'item-move-btn');
+            moveUpButton.onclick = function() { moveArrayItem(currentPath, itemIndex, -1); };
+            if (itemIndex === 0) moveUpButton.disabled = true;
+
+            const moveDownButton = document.createElement('button');
+            moveDownButton.type = 'button';
+            moveDownButton.textContent = '↓ Down';
+            moveDownButton.classList.add('item-control-btn', 'item-move-btn');
+            moveDownButton.onclick = function() { moveArrayItem(currentPath, itemIndex, 1); };
+            if (itemIndex === data.length - 1) moveDownButton.disabled = true;
+            
+            const actualRemoveButton = document.createElement('button'); // Renamed to avoid conflict
+            actualRemoveButton.type = 'button';
+            actualRemoveButton.textContent = 'Remove';
+            actualRemoveButton.classList.add('item-control-btn', 'item-remove-btn');
+            actualRemoveButton.onclick = function() { removeArrayItem(currentPath, itemIndex); };
+            
+            // Append control buttons
+            const targetForButtons = entryDiv.querySelector('.json-entry-primitive') || entryDiv.querySelector('fieldset');
+            if (targetForButtons) {
+                const buttonContainer = document.createElement('span'); 
+                buttonContainer.appendChild(moveUpButton);
+                buttonContainer.appendChild(moveDownButton);
+                buttonContainer.appendChild(actualRemoveButton); // Use the renamed variable
+
+                if (targetForButtons.classList.contains('json-entry-primitive')) {
+                    targetForButtons.appendChild(buttonContainer);
+                } else { 
+                    // If it's a fieldset (nested object/array), append buttons after the fieldset
+                    entryDiv.appendChild(buttonContainer); 
+                }
+            } else {
+                 // Fallback if no clear target, append directly to entryDiv
+                 entryDiv.appendChild(moveUpButton); 
+                 entryDiv.appendChild(moveDownButton);
+                 entryDiv.appendChild(actualRemoveButton); // Use the renamed variable
+            }
+          }
+          parentElement.appendChild(entryDiv);
+        }
+      }
+    }
+
+    function syncFormToJSONData() {
+        if (!jsonData) return;
+        const form = document.getElementById('jsonForm');
+        const inputs = form.querySelectorAll('input[name], textarea[name]');
+
+        inputs.forEach(input => {
+            const path = input.name;
+            let value;
+            if (input.type === 'checkbox') {
+                value = input.checked;
+            } else if (input.type === 'number') {
+                value = input.valueAsNumber;
+                 if (isNaN(value) && input.value.trim() === "") {
+                    const originalValue = getValueByPath(jsonData, path);
+                    value = (originalValue === null) ? null : input.value; 
+                } else if (isNaN(value)) {
+                    // If it's still NaN, it might be an invalid number, keep as string or original
+                    // For simplicity, we'll let updateJSONValue handle type coercion based on original
+                    value = input.value;
+                }
+            } else { // text, textarea
+                value = input.value;
+            }
+            updateJSONValue(jsonData, path, value);
+        });
+    }
+
+
+    function addArrayItem(arrayPath) {
+        syncFormToJSONData(); // Sync before modifying structure
+        const array = getValueByPath(jsonData, arrayPath);
+        if (Array.isArray(array)) {
+            array.push(null); 
+            rerenderMainForm();
+        } else {
+            console.error("Attempted to add item to non-array at path:", arrayPath);
+            alert("Error: Target is not an array.");
+        }
+    }
+
+    function bulkAddArrayItems(arrayPath) {
+        syncFormToJSONData(); // Sync before modifying structure
+        const array = getValueByPath(jsonData, arrayPath);
+        if (!Array.isArray(array)) {
+            alert("Error: Target is not an array.");
+            console.error("Attempted to bulk add to non-array at path:", arrayPath);
+            return;
+        }
+
+        const inputString = prompt("Paste JSON for array items to add (e.g., [{\"id\":1},{\"id\":2}] or {\"id\":1},{\"id\":2}):");
+        if (inputString === null || inputString.trim() === "") {
+            return; 
+        }
+
+        let itemsToAdd = [];
+        try {
+            let parseableString = inputString.trim();
+            if (!parseableString.startsWith('[') || !parseableString.endsWith(']')) {
+                parseableString = `[${parseableString}]`;
+            }
+            itemsToAdd = JSON.parse(parseableString);
+            
+            if (!Array.isArray(itemsToAdd)) {
+                throw new Error("Parsed data is not an array.");
+            }
+
+            array.push(...itemsToAdd); 
+            rerenderMainForm();
+
+        } catch (e) {
+            alert("Invalid JSON format for bulk add: " + e.message + "\nPlease provide a valid JSON array or comma-separated objects.");
+            console.error("Bulk add parse error:", e);
+        }
+    }
+
+    function removeArrayItem(arrayPath, indexToRemove) {
+        syncFormToJSONData(); // Sync before modifying structure
+        const array = getValueByPath(jsonData, arrayPath);
+        if (Array.isArray(array)) {
+            array.splice(indexToRemove, 1);
+            rerenderMainForm();
+        } else {
+            console.error("Attempted to remove item from non-array at path:", arrayPath);
+            alert("Error: Target is not an array.");
+        }
+    }
+
+    function moveArrayItem(arrayPath, index, direction) {
+        syncFormToJSONData(); // Sync before modifying structure
+        const array = getValueByPath(jsonData, arrayPath);
+        if (!Array.isArray(array)) {
+            alert("Error: Target is not an array.");
+            return;
+        }
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= array.length) {
+            return; 
+        }
+        const temp = array[index];
+        array[index] = array[newIndex];
+        array[newIndex] = temp;
+        
+        rerenderMainForm();
+    }
+
+    function rerenderMainForm() {
+        const form = document.getElementById('jsonForm');
+        form.innerHTML = ''; // Clear and re-render
+        if (jsonData) {
+            renderJSONStructure(form, jsonData, '');
+        }
+    }
+    
+    function getValueByPath(obj, path) {
+        const keys = [];
+        String(path).replace(/\[(\d+)\]/g, '.$1').split('.').forEach(k => {
+            if (k && k !== "") keys.push(k);
+        });
+
+        if (keys.length === 0 && path === "") return obj; // Path is root
+        if (keys.length === 0) return undefined;
+
+
+        let current = obj;
+        for (let i = 0; i < keys.length; i++) {
+            if (current === null || typeof current !== 'object' || !current.hasOwnProperty(keys[i])) {
+                return undefined; 
+            }
+            current = current[keys[i]];
+        }
+        return current;
+    }
+
+
+    function updateJSONValue(obj, path, value) {
+      const keys = [];
+      // Path parser: "obj.arr[0].prop" -> ["obj", "arr", "0", "prop"]
+      String(path).replace(/\[(\d+)\]/g, '.$1').split('.').forEach(k => {
+         if (k && k !== "") keys.push(k); // Filter out empty strings from paths like "[0]" -> ".0"
+      });
+
+      if (keys.length === 0) {
+        // This case might occur if jsonData itself is a primitive/array and path is empty or just index
+        // For simplicity, this editor assumes jsonData is an object or array of objects.
+        // If jsonData is an array and path is like "[0]", keys will be ["0"].
+        console.error("Cannot update with empty path unless root is being replaced.");
+        return;
+      }
+
+      let current = obj;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (current && typeof current === 'object' && current.hasOwnProperty(key)) {
+          current = current[key];
+        } else {
+          console.error('Path resolution error at key:', key, 'in path:', path, JSON.stringify(current));
+          return; 
+        }
+      }
+      
+      const finalKey = keys[keys.length - 1];
+      if (current && typeof current === 'object' && (current.hasOwnProperty(finalKey) || Array.isArray(current))) {
+        // If current is an array, finalKey will be an index (string).
+        const originalValue = current[finalKey];
+        if (typeof originalValue === 'number' && typeof value === 'string' && !isNaN(parseFloat(value))) {
+            current[finalKey] = parseFloat(value);
+        } else if (typeof originalValue === 'boolean' && typeof value === 'string') {
+            if (value.toLowerCase() === 'true') current[finalKey] = true;
+            else if (value.toLowerCase() === 'false') current[finalKey] = false;
+            else current[finalKey] = value; // Keep as string if not "true"/"false"
+        }
+        else {
+            current[finalKey] = value;
+        }
+      } else {
+        console.error('Final key/index not found or context is not an object/array:', finalKey, 'in path:', path, JSON.stringify(current));
+      }
+    }
+
+    document.getElementById('exportBtn').addEventListener('click', function() {
+      if (!jsonData) return;
+      
+      syncFormToJSONData(); // Make sure data is up to date
+      
+      const jsonString = JSON.stringify(jsonData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = originalFilename || 'exported_data.json';
+      document.body.appendChild(a);
+      a.click();
+      
+      setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    });
+
+    // Search functionality
+    function setupSearch() {
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById('searchBtn');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const searchResults = document.getElementById('searchResults');
+      
+      searchBtn.addEventListener('click', function() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        if (!searchTerm) return;
+        
+        clearHighlights(); // Clear any existing highlights
+        
+        const results = searchJSON(jsonData, searchTerm);
+        displaySearchResults(results, searchResults);
+      });
+      
+      clearSearchBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        searchResults.style.display = 'none';
+        clearHighlights();
+      });
+      
+      // Enable search on Enter key
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchBtn.click();
+        }
+      });
+    }
+
+    function searchJSON(obj, term, path = '', results = []) {
+      if (obj === null) return results;
+      
+      if (typeof obj === 'object') {
+        for (const key in obj) {
+          if (Object.hasOwnProperty.call(obj, key)) {
+            const newPath = Array.isArray(obj) ? `${path}[${key}]` : path ? `${path}.${key}` : key;
+            
+            // Check if key contains search term
+            if (String(key).toLowerCase().includes(term)) {
+              results.push({ path: newPath, key: key, value: obj[key] });
+            }
+            
+            // Check if value contains search term (for primitives)
+            const value = obj[key];
+            if (value !== null && typeof value !== 'object' && 
+                String(value).toLowerCase().includes(term)) {
+              results.push({ path: newPath, key: key, value: value });
+            }
+            
+            // Recursively search nested objects
+            searchJSON(obj[key], term, newPath, results);
+          }
+        }
+      }
+      
+      return results;
+    }
+
+    function displaySearchResults(results, container) {
+      container.innerHTML = '';
+      container.style.display = 'block';
+      
+      if (results.length === 0) {
+        container.innerHTML = '<p>No results found.</p>';
+        return;
+      }
+      
+      const resultList = document.createElement('ul');
+      
+      results.forEach(result => {
+        const item = document.createElement('li');
+        item.innerHTML = `<strong>${result.path}</strong>: ${formatResultValue(result.value)}`;
+        
+        item.addEventListener('click', function() {
+          highlightField(result.path);
+        });
+        
+        resultList.appendChild(item);
+      });
+      
+      container.appendChild(resultList);
+    }
+
+    function formatResultValue(value) {
+      if (value === null) return 'null';
+      if (typeof value === 'object') return Array.isArray(value) ? '[Array]' : '{Object}';
+      if (typeof value === 'string') return `"${value.length > 50 ? value.substring(0, 47) + '...' : value}"`;
+      return String(value);
+    }
+
+    function highlightField(path) {
+      clearHighlights();
+      
+      // Find the input field by path
+      const elementId = path.replace(/[\[\].]/g, '_');
+      const element = document.getElementById(elementId);
+      
+      if (element) {
+        element.classList.add('highlight');
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function clearHighlights() {
+      const highlighted = document.querySelectorAll('.highlight');
+      highlighted.forEach(el => {
+        el.classList.remove('highlight');
+      });
+    }
+
+    function rerenderMainForm() {
+      if (!jsonData) return;
+      
+      const form = document.getElementById('jsonForm');
+      form.innerHTML = '';
+      renderJSONStructure(form, jsonData, '');
+      
+      // Re-setup search after rerendering
+      setupSearch();
+    }
+
+    // ... existing code ...
+  </script>
+</body>
+</html>
