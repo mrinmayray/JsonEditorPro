@@ -3,306 +3,314 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JSON Editor Pro</title>
+  <title>JSON Editor Pro - Free Online JSON Editor and Validator Tool</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="JSON Editor Pro is a free online tool for editing, validating, and formatting JSON data with a user-friendly interface. Upload JSON files, fix errors, and export valid JSON.">
+  <meta name="keywords" content="JSON editor, JSON validator, JSON formatter, JSON parser, online JSON tool, JSON beautifier, edit JSON online, JSON error checker">
+  <meta name="author" content="Mrinmay Ray">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://jsoneditorpro.com/">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="JSON Editor Pro - Free Online JSON Editor and Validator Tool">
+  <meta property="og:description" content="Edit, validate, and format JSON data online with this easy-to-use tool. Supports error highlighting, search functionality, and more.">
+  <meta property="og:url" content="https://jsoneditorpro.com/">
+  <meta property="og:image" content="https://jsoneditorpro.com/public/og-image.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="JSON Editor Pro - Free Online JSON Editor and Validator Tool">
+  <meta name="twitter:description" content="Edit, validate, and format JSON data online with this easy-to-use tool. Supports error highlighting, search functionality, and more.">
+  <meta name="twitter:image" content="https://jsoneditorpro.com/public/og-image.png">
+  
   <!-- Favicons -->
   <link rel="icon" href="public/favicon.png" type="image/png">
   <link rel="icon" href="public/favicon-16x16.png" sizes="16x16" type="image/png">
   <link rel="icon" href="public/favicon-32x32.png" sizes="32x32" type="image/png">
   <link rel="shortcut icon" href="public/favicon.png" type="image/png">
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "JSON Editor Pro",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "JSON Editor Pro is a free online tool for editing, validating, and formatting JSON data with a user-friendly interface.",
+    "screenshot": "https://jsoneditorpro.com/public/screenshot.png",
+    "featureList": [
+      "JSON validation", 
+      "Error highlighting", 
+      "JSON formatting", 
+      "JSON searching",
+      "JSON editing",
+      "Easy export"
+    ],
+    "provider": {
+      "@type": "Person",
+      "name": "Mrinmay Ray"
+    }
+  }
+  </script>
+  <!-- Add Google Fonts for a more modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-light: #dbeafe;
+      --primary-dark: #1e40af;
+      --secondary-color: #64748b;
+      --accent-color: #f59e0b;
+      --background-color: #f8fafc;
+      --card-color: #ffffff;
+      --text-color: #1e293b;
+      --text-light: #64748b;
+      --border-color: #e2e8f0;
+      --border-radius: 10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
       margin: 0;
-      padding: 20px;
+      padding: 0;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
 
     .container {
-      background: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: var(--card-color);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
       width: 100%;
-      max-width: 900px;
-      margin: 20px;
-      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .about-container {
+      background: var(--card-color);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
     }
 
     h1 {
-      color: #007bff;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .tagline {
+      color: var(--text-light);
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 1.1rem;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background-color: var(--primary-light);
+      border-radius: var(--border-radius);
       text-align: center;
-      margin-bottom: 25px;
-      font-size: 1.8em;
+      transition: all 0.3s ease;
     }
 
-    input[type="file"] {
-      display: block;
-      margin: 0 auto 25px auto;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background-color: #f9f9f9;
-      cursor: pointer;
-    }
-    input[type="file"]:hover {
-      border-color: #007bff;
-    }
-
-    #jsonForm {
-      margin-top: 20px;
+    .file-selected-indicator {
+      display: none; /* Hidden by default */
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary-light);
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
     }
 
-    .json-entry {
-      margin-bottom: 12px;
-      padding-left: 25px;
-      border-left: 3px solid #e9ecef; /* Lighter, thicker indent line */
-      position: relative; /* For pseudo-elements if needed */
-    }
-    .json-entry:last-child {
-        margin-bottom: 0;
-    }
-    /* Add some spacing before a nested object/array */
-    .json-entry > fieldset {
-        margin-top: 8px;
+    .selected-file-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-
-    .json-entry > label { /* Label for the key */
-      font-weight: 600; /* Slightly bolder */
-      color: #495057; /* Darker grey */
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.95em;
+    .file-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
-    input[type="text"],
-    input[type="number"],
-    textarea {
-      width: calc(100% - 20px); /* Full width minus padding */
-      padding: 10px;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      font-family: 'Consolas', 'Courier New', monospace;
-      font-size: 0.9em;
-      box-sizing: border-box;
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    textarea:focus {
-        border-color: #80bdff;
-        outline: 0;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    .file-name {
+      font-weight: 600;
+      color: var(--text-color);
+      word-break: break-word;
     }
 
-
-    textarea {
-      min-height: 70px;
-      resize: vertical;
-    }
-
-    input[type="checkbox"] {
-      margin-left: 8px;
-      vertical-align: middle;
-      transform: scale(1.1); /* Slightly larger checkbox */
-    }
-    
-    /* Style for key-value pair when value is a primitive */
-    .json-entry-primitive {
-        display: flex;
-        align-items: center;
-        gap: 10px; /* Space between label and input */
-    }
-    .json-entry-primitive > label {
-        margin-bottom: 0; /* Remove bottom margin for inline effect */
-        flex-shrink: 0; /* Prevent label from shrinking */
-    }
-    .json-entry-primitive > input,
-    .json-entry-primitive > textarea {
-        flex-grow: 1; /* Input takes remaining space */
-        width: auto; /* Override fixed width */
-    }
-
-
-    fieldset.json-container { /* Generic container for object/array */
-      border: 1px solid #007bff;
-      border-radius: 6px;
-      padding: 10px 15px 15px 15px; /* More padding inside */
-      margin-top: 5px; /* Space above the fieldset */
-      background-color: #fdfdff; /* Very light blue tint */
-    }
-
-    fieldset.json-container legend {
-      font-weight: bold;
-      color: #0056b3;
-      padding: 0 8px;
-      font-size: 0.9em;
-      background-color: #fff; /* Legend background to sit on top of border */
-    }
-
-    button#exportBtn {
-      background-color: #28a745;
+    .file-upload-another {
+      background-color: var(--primary-color);
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1.05em;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
       font-weight: 500;
-      display: block;
-      margin: 30px auto 10px auto;
-      transition: background-color 0.2s ease-in-out;
-    }
-
-    button#exportBtn:hover {
-      background-color: #218838;
-    }
-
-    button#exportBtn:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    .error-message {
-      color: #D8000C;
-      background-color: #FFD2D2;
-      border: 1px solid #D8000C;
-      padding: 10px;
-      margin-top: 15px;
-      border-radius: 4px;
-      white-space: pre-wrap; /* Keep formatting of error message */
-    }
-
-    #rawJsonOnError {
-        margin-top: 15px;
-        padding: 10px;
-        border: 1px dashed #ccc;
-        background-color: #f9f9f9;
-        max-height: 300px;
-        overflow-y: auto;
-        white-space: pre-wrap;
-        font-family: 'Consolas', 'Courier New', monospace;
-    }
-
-    .array-control-btn, .item-remove-btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 4px 10px; /* Adjusted padding */
-      border-radius: 4px;
       cursor: pointer;
-      font-size: 0.85em; /* Adjusted font size */
-      margin-left: 10px;
-      vertical-align: middle; /* Align with legend/label text */
-      margin-top: -2px; /* Fine-tune alignment */
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
     }
-    .array-control-btn:hover, .item-remove-btn:hover {
-      background-color: #0056b3;
+
+    .file-upload-another:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
     }
-    .array-control-btn.bulk-add {
-        background-color: #17a2b8; /* Teal for bulk add */
+
+    .upload-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
     }
-    .array-control-btn.bulk-add:hover {
-        background-color: #138496;
+
+    .upload-text {
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      font-weight: 500;
     }
-    .item-control-btn { /* Generic class for item buttons */
-      color: white;
-      border: none;
-      padding: 3px 8px; /* Smaller padding for item controls */
-      border-radius: 4px;
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .file-input {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       cursor: pointer;
-      font-size: 0.8em; /* Smaller font for item controls */
-      margin-left: 5px;
-      vertical-align: middle;
-    }
-    .item-remove-btn {
-      background-color: #dc3545; /* Red for remove */
-    }
-    .item-remove-btn:hover {
-      background-color: #c82333;
-    }
-    .item-move-btn {
-      background-color: #6c757d; /* Grey for move */
-    }
-    .item-move-btn:hover {
-      background-color: #5a6268;
-    }
-    .item-move-btn:disabled {
-      background-color: #adb5bd;
-      cursor: not-allowed;
     }
 
-    /* Align remove button nicely with primitive inputs */
-    .json-entry-primitive .item-remove-btn {
-        margin-left: 10px;
-    }
-    /* Align remove button for nested objects/arrays within an array item */
-    .json-entry > fieldset + .item-remove-btn {
-        margin-top: 5px; /* Add some space if it's after a fieldset */
-        display: inline-block; /* Ensure it behaves well */
-    }
-     /* Wrapper for array item content and its remove button */
-    .array-item-wrapper {
-        display: flex;
-        align-items: flex-start; /* Align items to the start, useful for multi-line textareas */
-        width: 100%;
-    }
-    .array-item-content {
-        flex-grow: 1; /* Content takes up available space */
+    .file-input-button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    /* Search feature styles */
+    .file-input-button:hover {
+      background-color: var(--primary-dark);
+    }
+
     #searchContainer {
       margin-bottom: 20px;
-      padding: 15px;
-      background-color: #f8f9fa;
-      border-radius: 6px;
-      border: 1px solid #dee2e6;
+      padding: 1.5rem;
+      background-color: var(--card-color);
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
     }
     
     #searchInput {
       width: 70%;
-      padding: 10px;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      font-size: 0.95em;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
+      font-size: 1rem;
       margin-right: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    #searchInput:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
     
     .search-btn {
-      background-color: #007bff;
+      background-color: var(--primary-color);
       color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 30px;
       cursor: pointer;
-      font-size: 0.9em;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
     
     .search-btn:hover {
-      background-color: #0069d9;
+      background-color: var(--primary-dark);
     }
     
     #clearSearchBtn {
-      background-color: #6c757d;
+      background-color: var(--secondary-color);
     }
     
     #clearSearchBtn:hover {
-      background-color: #5a6268;
+      background-color: #475569;
     }
     
     #searchResults {
-      margin-top: 15px;
+      margin-top: 1rem;
       max-height: 200px;
       overflow-y: auto;
-      border: 1px solid #dee2e6;
-      border-radius: 4px;
-      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 1rem;
       background-color: white;
     }
     
@@ -313,13 +321,14 @@
     }
     
     #searchResults li {
-      padding: 8px 10px;
-      border-bottom: 1px solid #eee;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
     
     #searchResults li:hover {
-      background-color: #f1f8ff;
+      background-color: transparent;
     }
     
     #searchResults li:last-child {
@@ -327,60 +336,409 @@
     }
     
     .highlight {
-      background-color: #ffffa0 !important;
+      background-color: #fffbeb !important;
+      border-left: 3px solid var(--accent-color);
       transition: background-color 0.3s ease;
     }
 
-    /* Footer styles */
-    .footer {
+    #jsonForm {
+      margin-top: 1.5rem;
+    }
+
+    .json-entry {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+      border-left: 3px solid var(--border-color);
+      position: relative;
+    }
+    
+    .json-entry:last-child {
+      margin-bottom: 0;
+    }
+    
+    .json-entry:hover {
+      background-color: transparent;
+      border-left-color: var(--border-color);
+    }
+
+    .json-entry::before {
+      display: none;
+    }
+
+    .json-entry:hover::before {
+      display: none;
+    }
+    
+    .json-entry > fieldset {
+      margin-top: 0.5rem;
+    }
+
+    .json-entry > label {
+      font-weight: 600;
+      color: var(--text-color);
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+      border-color: var(--primary-color);
+      outline: 0;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    fieldset.json-container {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem 1.25rem;
+      margin-top: 0.5rem;
+      background-color: #f8faff;
+      position: relative;
+    }
+
+    fieldset.json-container:hover {
+      box-shadow: none;
+      border-color: var(--border-color);
+    }
+
+    fieldset.json-container::after {
+      display: none;
+    }
+
+    fieldset.json-container:hover::after {
+      display: none;
+    }
+
+    fieldset.json-container > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    fieldset.json-container legend {
+      font-weight: 600;
+      color: var(--primary-color);
+      padding: 0 0.5rem;
+      font-size: 0.9rem;
+      background-color: #fff;
+    }
+
+    button#exportBtn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 0.875rem 1.75rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: block;
+      margin: 2rem auto 1rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    button#exportBtn:hover {
+      background-color: #d97706;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    button#exportBtn:disabled {
+      background-color: var(--secondary-color);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      color: #dc2626;
+      background-color: #fee2e2;
+      border: 1px solid #f87171;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+
+    .array-control-btn, .item-remove-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-left: 0.625rem;
+      vertical-align: middle;
+      transition: all 0.2s ease;
+    }
+    
+    .array-control-btn:hover, .item-remove-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .array-control-btn.bulk-add {
+      background-color: #0ea5e9;
+    }
+    
+    .array-control-btn.bulk-add:hover {
+      background-color: #0284c7;
+    }
+
+    .features h3, .json-tips h3 {
+      color: var(--primary-color);
+      margin-top: 1.75rem;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .features ul, .json-tips ul {
+      padding-left: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .features li, .json-tips li {
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+
+    .features li::before, .json-tips li::before {
+      content: "•";
+      color: var(--primary-color);
+      font-weight: bold;
+      display: inline-block;
+      width: 1rem;
+      margin-left: -1rem;
+    }
+
+    .about-json-editor {
+      padding: 1.5rem;
+    }
+
+    .about-json-editor h2 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .about-json-editor p {
+      line-height: 1.7;
+      color: var(--text-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .feature-card {
+      background-color: #f8faff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-color);
+    }
+
+    .feature-card h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .feature-card svg {
+      margin-right: 0.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--text-light);
+    }
+
+    footer {
       text-align: center;
-      margin-top: 30px;
-      padding-top: 15px;
-      border-top: 1px solid #eee;
-      font-size: 0.9em;
-      color: #6c757d;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-light);
     }
     
     .github-link {
       display: inline-flex;
       align-items: center;
-      color: #333;
+      color: var(--text-color);
       text-decoration: none;
       transition: color 0.2s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      background-color: #f3f4f6;
+      margin-bottom: 1rem;
     }
     
     .github-link:hover {
-      color: #0366d6;
+      color: var(--primary-color);
+      background-color: #e5e7eb;
     }
     
     .github-icon {
-      margin-right: 5px;
-      width: 20px;
-      height: 20px;
+      margin-right: 0.5rem;
+      width: 1.25rem;
+      height: 1.25rem;
     }
 
+    .copyright {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        margin: 1rem;
+      }
+      
+      .container, .about-container {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.75rem;
+      }
+      
+      .tagline {
+        font-size: 0.95rem;
+      }
+      
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      #error-example {
+        flex-direction: column;
+      }
+      
+      #error-example > div {
+        margin-right: 0;
+        margin-bottom: 0.625rem;
+      }
+      
+      #searchInput {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.625rem;
+      }
+      
+      .search-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>JSON Editor Pro</h1>
-    
-    <!-- Search container -->
-    <div id="searchContainer" style="display: none;">
-      <input type="text" id="searchInput" placeholder="Search JSON (keys or values)...">
-      <button id="searchBtn" class="search-btn">Search</button>
-      <button id="clearSearchBtn" class="search-btn">Clear</button>
-      <div id="searchResults" style="display: none;"></div>
-    </div>
-    
-    <input type="file" id="jsonInput" accept=".json"/>
-    <div id="errorDisplay" class="error-message" style="display: none;"></div>
-    <div id="rawJsonOnErrorContainer" style="display: none; margin-top: 20px;">
-        <div class="json-validation-recommendation" style="background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+  <div class="main-container">
+    <div class="container">
+      <header>
+        <h1>JSON Editor Pro</h1>
+        <p class="tagline">A powerful online JSON editor, validator and formatter tool</p>
+      </header>
+      
+      <!-- Search container -->
+      <div id="searchContainer" style="display: none;">
+        <input type="text" id="searchInput" placeholder="Search JSON (keys or values)..." aria-label="Search within JSON">
+        <button id="searchBtn" class="search-btn">Search</button>
+        <button id="clearSearchBtn" class="search-btn">Clear</button>
+        <div id="searchResults" style="display: none;" aria-live="polite"></div>
+      </div>
+      
+      <!-- File selected indicator (hidden by default) -->
+      <div class="file-selected-indicator" id="fileSelectedIndicator">
+        <div class="selected-file-info">
+          <div class="file-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+              <path d="M4.5 6.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM4.5 8.5A.5.5 0 0 1 5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0 2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="file-name" id="selectedFileName">filename.json</div>
+            <div style="font-size: 0.8rem; color: var(--text-light);">JSON file ready to edit</div>
+          </div>
+        </div>
+        <button class="file-upload-another" id="uploadAnotherBtn" aria-label="Upload another JSON file">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+          </svg>
+          Upload Another
+        </button>
+      </div>
+      
+      <section class="upload-section" id="uploadSection">
+        <h2 class="visually-hidden">Upload JSON File</h2>
+        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <p class="upload-text">Upload your JSON file to edit, validate, or format</p>
+        <div class="file-input-wrapper">
+          <button class="file-input-button">Choose File</button>
+          <input type="file" id="jsonInput" accept=".json" aria-label="Upload JSON file" class="file-input"/>
+        </div>
+        <p class="file-info" style="color: var(--text-light); font-size: 0.9rem;">Supported format: .json</p>
+      </section>
+      
+      <div id="errorDisplay" class="error-message" style="display: none;"></div>
+      <div id="rawJsonOnErrorContainer" style="display: none; margin-top: 20px;">
+        <!-- Error content -->
+        <div class="json-validation-recommendation" style="background-color: #f8f9fa; border-left: 4px solid var(--primary-color); padding: 15px; margin-bottom: 20px; border-radius: 4px;">
             <h3 style="margin-top: 0; color: #333;">We found a problem with your JSON file</h3>
-            <p style="font-size: 16px; line-height: 1.5;">Your file has a formatting error that needs to be fixed before it can be opened. We recommend using <a href="https://jsonformatter.org/" target="_blank" style="color: #007bff; font-weight: bold;">JSONFormatter.org</a> to help correct your file.</p>
+            <p style="font-size: 16px; line-height: 1.5;">Your file has a formatting error that needs to be fixed before it can be opened. We recommend using <a href="https://jsonformatter.org/" target="_blank" style="color: var(--primary-color); font-weight: bold;">JSONFormatter.org</a> to help correct your file.</p>
             <div style="margin-top: 15px;">
-                <button id="openJsonFormatterBtn" style="background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 500;">Fix my file at JSONFormatter.org</button>
+                <button id="openJsonFormatterBtn" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 500;" aria-label="Fix my file at JSONFormatter.org">Fix my file at JSONFormatter.org</button>
             </div>
         </div>
         
@@ -407,7 +765,7 @@
         
         <div style="background-color: white; border-radius: 6px; padding: 15px; border: 1px solid #e9ecef; margin-bottom: 20px;">
             <h4 style="margin-top: 0; margin-bottom: 15px; color: #6c757d; display: flex; align-items: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" style="margin-right: 8px;" fill="#6c757d">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" style="margin-right: 8px;" fill="#6c757d" aria-hidden="true">
                     <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
                 </svg>
                 Technical Details (for developers)
@@ -420,19 +778,82 @@
                 </details>
             </div>
         </div>
+      </div>
+      <form id="jsonForm"></form>
+      <button id="exportBtn" style="display: none;">Save JSON</button>
     </div>
-    <form id="jsonForm"></form>
-    <button id="exportBtn" style="display: none;">Save JSON</button>
+    
+    <div class="about-container">
+      <section class="about-json-editor">
+        <h2>About JSON Editor Pro</h2>
+        <p>JSON Editor Pro is a free online tool that helps developers and data analysts work with JSON files. Whether you need to validate, format, edit, or explore JSON data, our tool provides a clean and intuitive interface to make your job easier.</p>
+        
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Visual JSON Editing
+            </h3>
+            <p>Edit complex JSON structures with a user-friendly form interface that makes changes intuitive and error-free.</p>
+          </div>
+          
+          <div class="feature-card">
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Error Detection
+            </h3>
+            <p>Quickly identify and fix syntax errors in your JSON files with detailed error messages and suggestions.</p>
+          </div>
+          
+          <div class="feature-card">
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Search Functionality
+            </h3>
+            <p>Find specific keys or values within large JSON structures with our powerful search tool.</p>
+          </div>
+          
+          <div class="feature-card">
+            <h3>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export Options
+            </h3>
+            <p>Save your edited JSON back to a file with a single click, preserving your changes exactly as intended.</p>
+          </div>
+        </div>
+        
+        <div class="json-tips">
+          <h3>Common JSON Use Cases</h3>
+          <p>JSON (JavaScript Object Notation) is a lightweight data interchange format widely used for:</p>
+          <ul>
+            <li>API responses and requests</li>
+            <li>Configuration files</li>
+            <li>Data storage and transfer</li>
+            <li>Web application settings</li>
+            <li>NoSQL database storage</li>
+          </ul>
+        </div>
+      </section>
+    </div>
     
     <!-- Footer with GitHub credit -->
-    <div class="footer">
-      <a href="https://github.com/mrinmayray" target="_blank" class="github-link">
-        <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <footer class="footer">
+      <a href="https://github.com/mrinmayray" target="_blank" rel="noopener" class="github-link">
+        <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
           <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
         </svg>
-        Created by Mrinmay Ray
+        Created by <span itemprop="author">Mrinmay Ray</span>
       </a>
-    </div>
+      <p class="copyright">&copy; <span itemprop="copyrightYear">2023</span> JSON Editor Pro. All rights reserved.</p>
+    </footer>
   </div>
 
   <script>
@@ -448,6 +869,9 @@
       const rawJsonOnErrorPre = document.getElementById('rawJsonOnError');
       const searchContainer = document.getElementById('searchContainer');
       const jsonErrorMessage = document.getElementById('jsonErrorMessage');
+      const uploadSection = document.getElementById('uploadSection');
+      const fileSelectedIndicator = document.getElementById('fileSelectedIndicator');
+      const selectedFileName = document.getElementById('selectedFileName');
 
       // Clear previous state
       form.innerHTML = ''; 
@@ -460,9 +884,22 @@
       searchContainer.style.display = 'none';
       jsonData = null;
 
-
       if (file) {
         originalFilename = file.name;
+        
+        // Show selected file name and hide upload section
+        if (selectedFileName) {
+          selectedFileName.textContent = file.name;
+        }
+        
+        // Toggle UI elements
+        if (uploadSection) {
+          uploadSection.style.display = 'none';
+        }
+        if (fileSelectedIndicator) {
+          fileSelectedIndicator.style.display = 'flex';
+        }
+        
         const reader = new FileReader();
 
         reader.onload = function(event) {
@@ -513,6 +950,29 @@
         };
         reader.readAsText(file);
       }
+    });
+
+    // Add click handler for the file input button
+    document.querySelector('.file-input-button').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('jsonInput').click();
+    });
+    
+    // Add click handler for the "Upload Another" button
+    document.getElementById('uploadAnotherBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Reset the file input to allow selecting the same file again
+      document.getElementById('jsonInput').value = '';
+      
+      // Show upload section and hide file indicator
+      document.getElementById('uploadSection').style.display = 'flex';
+      document.getElementById('fileSelectedIndicator').style.display = 'none';
+      
+      // Clear the form and hide exports
+      document.getElementById('jsonForm').innerHTML = '';
+      document.getElementById('exportBtn').style.display = 'none';
+      document.getElementById('searchContainer').style.display = 'none';
     });
 
     function renderJSONStructure(parentElement, data, currentPath) {
@@ -1064,7 +1524,7 @@
 
     // Add event listener for the JSONFormatter.org button
     document.getElementById('openJsonFormatterBtn').addEventListener('click', function() {
-      window.open('https://jsonformatter.org/', '_blank');
+      window.open('https://mrinmayray.github.io/JsonEditorPro/', '_blank');
     });
   </script>
 </body>
